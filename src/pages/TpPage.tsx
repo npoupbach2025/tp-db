@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useCallback, useState } from "react";
 import { api } from "@/lib/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -69,6 +69,7 @@ export default function TpPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [tp, setTp] = useState<TpPayload | null>(null);
+  const [activeTab, setActiveTab] = useState("overview");
   const [sqlInput, setSqlInput] = useState("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name");
   const [sqlLoading, setSqlLoading] = useState(false);
   const [sqlHistory, setSqlHistory] = useState<SqlHistoryEntry[]>([]);
@@ -122,6 +123,16 @@ export default function TpPage() {
     }
   };
 
+  const handleDocsClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLElement;
+    const link = target.closest('a[data-tab]') as HTMLElement | null;
+    if (link) {
+      e.preventDefault();
+      const tab = link.getAttribute('data-tab');
+      if (tab) setActiveTab(tab);
+    }
+  }, []);
+
   return (
     <div className="space-y-4">
       <div>
@@ -136,7 +147,7 @@ export default function TpPage() {
       ) : !tp ? (
         <Card><CardContent className="p-6 text-sm text-muted-foreground">Aucune donnée TP.</CardContent></Card>
       ) : (
-        <Tabs defaultValue="overview" className="space-y-3">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-3">
           <TabsList className="flex flex-wrap h-auto gap-1">
             <TabsTrigger value="overview">Aperçu</TabsTrigger>
             <TabsTrigger value="docs">Docs</TabsTrigger>
@@ -240,6 +251,7 @@ export default function TpPage() {
                 <div
                   className="tp-html-doc prose prose-sm max-w-none dark:prose-invert"
                   style={{ fontSize: '11pt', lineHeight: 1.5 }}
+                  onClick={handleDocsClick}
                   dangerouslySetInnerHTML={{ __html: extractBody(tp.docs.documentReponses) }}
                 />
               </CardContent>
