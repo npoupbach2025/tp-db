@@ -50,4 +50,14 @@ router.get('/', (req, res) => {
   res.json(payload);
 });
 
+// Serve TP images (PNG files from docs/)
+router.get('/images/:filename', (req, res) => {
+  const filename = path.basename(req.params.filename);
+  const filePath = path.join(TP_ROOT, 'docs', filename);
+  if (!fs.existsSync(filePath) || !filename.endsWith('.png')) {
+    return res.status(404).send('Not found');
+  }
+  res.sendFile(filePath);
+});
+
 module.exports = router;
