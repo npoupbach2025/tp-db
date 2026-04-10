@@ -84,7 +84,71 @@ const COLORS = {
   action: 0xf59e0b,  // amber
   error: 0xef4444,   // red
   logout: 0x6b7280,  // gray
+  pageView: 0x8b5cf6, // purple
+  click: 0x06b6d4,   // cyan
+  getData: 0x64748b,  // slate
 };
+
+// Human-readable page names
+const PAGE_NAMES = {
+  '/': 'Tableau de bord',
+  '/clubs': 'Clubs',
+  '/utilisateurs': 'Utilisateurs',
+  '/concours': 'Concours',
+  '/dessins': 'Dessins',
+  '/evaluations': 'Évaluations',
+  '/resultats': 'Résultats',
+  '/inscriptions': 'Inscriptions',
+  '/jury': 'Jury',
+  '/requetes-tp': 'Requêtes TP',
+  '/tp': 'TP SQL',
+};
+
+// Human-readable API action descriptions
+const ACTION_DESCRIPTIONS = {
+  'GET /api/dashboard': 'Consulte le tableau de bord',
+  'GET /api/clubs': 'Consulte la liste des clubs',
+  'GET /api/utilisateurs': 'Consulte la liste des utilisateurs',
+  'GET /api/concours': 'Consulte la liste des concours',
+  'GET /api/dessins': 'Consulte la liste des dessins',
+  'GET /api/evaluations': 'Consulte les évaluations',
+  'GET /api/resultats': 'Consulte les résultats',
+  'GET /api/inscriptions': 'Consulte les inscriptions',
+  'GET /api/jury': 'Consulte les affectations jury',
+  'POST /api/clubs': 'Crée un nouveau club',
+  'POST /api/utilisateurs': 'Crée un nouvel utilisateur',
+  'POST /api/concours': 'Crée un nouveau concours',
+  'POST /api/dessins': 'Crée un nouveau dessin',
+  'POST /api/dessins/upload': 'Upload un fichier dessin',
+  'POST /api/evaluations': 'Crée une évaluation',
+  'POST /api/inscriptions/clubs': 'Inscrit un club à un concours',
+  'POST /api/inscriptions/competiteurs': 'Inscrit un compétiteur',
+  'POST /api/inscriptions/evaluateurs': 'Inscrit un évaluateur',
+  'POST /api/jury': 'Affecte un évaluateur au jury',
+  'POST /api/sql-console': 'Exécute une requête SQL',
+};
+
+function describeAction(method, path) {
+  // Exact match
+  const key = `${method} ${path}`;
+  if (ACTION_DESCRIPTIONS[key]) return ACTION_DESCRIPTIONS[key];
+
+  // Match base path (e.g. GET /api/clubs/5 → "Consulte le club #5")
+  const parts = path.match(/^\/api\/([\w-]+)\/(.+)/);
+  if (parts) {
+    const [, resource, rest] = parts;
+    const names = {
+      clubs: 'club', utilisateurs: 'utilisateur', concours: 'concours',
+      dessins: 'dessin', evaluations: 'évaluation', jury: 'jury',
+    };
+    const singular = names[resource] || resource;
+    if (method === 'GET') return `Consulte le ${singular} #${rest}`;
+    if (method === 'PUT') return `Modifie le ${singular} #${rest}`;
+    if (method === 'DELETE') return `Supprime le ${singular} #${rest}`;
+  }
+
+  return `${method} ${path}`;
+}
 
 /**
  * Notify: new visitor
@@ -131,9 +195,11 @@ async function notifyLogin(ip, user, role) {
  */
 async function notifyAction(ip, user, method, path, statusCode) {
   const geo = await geolocateIp(ip);
+  const desc = describeAction(method, path);
+  const isRead = method === 'GET';
   sendToDiscord({
-    title: `⚡ Action ${method}`,
-    color: statusCode >= 400 ? COLORS.error : COLORS.action,
+    title: isRead ? `📖 ${desc}` : `⚡ ${desc}`,
+    color: statusCode >= 400 ? COLORS.error : (isRead ? COLORS.getData : COLORS.action),
     fields: [
       { name: '📅 Date', value: `\`${formatDate()}\``, inline: true },
       { name: '👤 Utilisateur', value: user ? `**${user.prenom} ${user.nom}**` : 'Non connecté', inline: true },
@@ -146,4 +212,44 @@ async function notifyAction(ip, user, method, path, statusCode) {
   });
 }
 
-module.exports = { notifyVisit, notifyLogin, notifyAction, geolocateIp, formatDate };
+/**
+ * Notify: page navigation (from SPA frontend)
+ */
+async function notifyPageView(ip, user, page, referrer) {
+  const geo = await geolocateIp(ip);
+  const pageName = PAGE_NAMES[page] || page;
+  sendToDiscord({
+    title: `📄 Navigation — ${pageName}`,
+    color: COLORS.pageView,
+    fields: [
+      { name: '📅 Date', value: `\`${formatDate()}\``, inline: true },
+      { name: '👤 Utilisateur', value: user ? `**${user}**` : 'Non connecté', inline: true },
+      { name: '📄 Page', value: `\`${page}\``, inline: true },
+      ...(referrer ? [{ name: '↩️ Depuis', value: `\`${referrer}\``, inline: true }] : []),
+      { name: '🌍 IP', value: `\`${ip}\``, inline: true },
+      { name: '📍 Localisation', value: `${geo.city}, ${geo.region || ''} (${geo.country})`, inline: true },
+    ],
+    timestamp: new Date().toISOString(),
+  });
+}
+
+/**
+ * Notify: user click/interaction (from frontend)
+ */
+async function notifyClick(ip, user, action, details) {
+  const geo = await geolocateIp(ip);
+  sendToDiscord({
+    title: `🖱️ ${action}`,
+    color: COLORS.click,
+    fields: [
+      { name: '📅 Date', value: `\`${formatDate()}\``, inline: true },
+      { name: '👤 Utilisateur', value: user ? `**${user}**` : 'Non connecté', inline: true },
+      ...(details ? [{ name: '📝 Détails', value: `\`${details.substring(0, 200)}\``, inline: false }] : []),
+      { name: '🌍 IP', value: `\`${ip}\``, inline: true },
+      { name: '📍 Localisation', value: `${geo.city}, ${geo.region || ''} (${geo.country})`, inline: true },
+    ],
+    timestamp: new Date().toISOString(),
+  });
+}
+
+module.exports = { notifyVisit, notifyLogin, notifyAction, notifyPageView, notifyClick, geolocateIp, formatDate, describeAction };

@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { DataProvider } from "@/contexts/DataContext";
 import Layout from "@/components/Layout";
+import ActivityTracker from "@/components/ActivityTracker";
 import LoginPage from "@/pages/LoginPage";
 import DashboardPage from "@/pages/DashboardPage";
 import ClubsPage from "@/pages/ClubsPage";
@@ -71,6 +72,7 @@ const App = () => {
         <Sonner />
         <DataProvider>
           <BrowserRouter>
+            <ActivityTracker />
             <Layout auth={auth} onLogout={handleLogout}>
               <Routes>
                 <Route path="/" element={<DashboardPage />} />

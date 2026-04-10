@@ -22,6 +22,7 @@ app.use(actionTracker);
 
 // Routes API
 app.use('/api/auth', require('./routes/auth'));
+app.use('/api/activity', require('./routes/activity'));
 app.use('/api', requireAuth);
 app.use('/api/clubs', require('./routes/clubs'));
 app.use('/api/utilisateurs', require('./routes/utilisateurs'));
