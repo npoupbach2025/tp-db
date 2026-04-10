@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Document Réponses — Conception d'un SI pour la gestion des concours de dessins</title>
+<style>
+  @page { margin: 2cm; size: A4; }
+  body { font-family: 'Calibri', 'Segoe UI', sans-serif; font-size: 11pt; line-height: 1.5; color: #222; max-width: 800px; margin: 0 auto; padding: 20px; }
+  h1 { text-align: center; font-size: 18pt; color: #1a3a6b; border-bottom: 3px solid #1a3a6b; padding-bottom: 10px; }
+  h2 { font-size: 14pt; color: #1a3a6b; margin-top: 30px; border-bottom: 1px solid #ccc; padding-bottom: 5px; page-break-before: always; }
+  h2:first-of-type { page-break-before: auto; }
+  h3 { font-size: 12pt; color: #2a5a9b; margin-top: 20px; }
+  h4 { font-size: 11pt; color: #3a6aab; margin-top: 15px; }
+  table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: 10pt; }
+  th, td { border: 1px solid #999; padding: 6px 8px; text-align: left; }
+  th { background-color: #e8eef7; font-weight: bold; }
+  pre, code { font-family: 'Consolas', 'Courier New', monospace; font-size: 9.5pt; background: #f4f6f9; border: 1px solid #ddd; border-radius: 3px; }
+  pre { padding: 10px; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word; }
+  code { padding: 1px 4px; }
+  .page-header { text-align: center; margin-bottom: 40px; }
+  .page-header p { margin: 5px 0; }
+  .constraint-box { background: #f9fafb; border-left: 4px solid #1a3a6b; padding: 10px 15px; margin: 10px 0; }
+  .note { background: #fffde7; border-left: 4px solid #f9a825; padding: 8px 12px; margin: 10px 0; font-size: 10pt; }
+  .footer { text-align: center; font-size: 9pt; color: #888; margin-top: 40px; border-top: 1px solid #ccc; padding-top: 10px; }
+  ul, ol { margin: 5px 0; }
+  li { margin: 3px 0; }
+  .team-table { width: 60%; margin: 20px auto; }
+  .team-table td { text-align: center; }
+</style>
+</head>
+<body>
+
+<!-- PAGE DE GARDE -->
+<div class="page-header">
+  <p style="font-size: 13pt; color: #666;">Master CNAM - ESAIP</p>
+  <p style="font-size: 11pt; color: #888;">UE : Introduction à la gestion des données à large échelle</p>
+  <br>
+  <h1>Plateforme Web pour la gestion des données<br>des concours de dessins</h1>
+  <p style="font-size: 13pt; font-weight: bold; margin-top: 20px;">Document Réponses</p>
+  <br>
+  <table class="team-table">
+    <tr><th>Nom</th><th>Prénom</th></tr>
+    <tr><td>POUPELIN</td><td>Niel</td></tr>
+    <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+    <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+  </table>
+  <br>
+  <p style="font-size: 10pt; color: #888;">Année universitaire 2025-2026</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>Question 1 : Le Schéma conceptuel de la base de données</h2>
+
+<p>Le schéma conceptuel UML ci-dessous modélise le système d'information pour la gestion des concours de dessins inter-clubs. Il a été réalisé avec draw.io et PlantUML.</p>
+
+<h3>Classes et attributs</h3>
+
+<p>Le diagramme comporte 9 classes organisées autour d'un héritage sur <code>Utilisateur</code> :</p>
+
+<table>
+<tr><th>Classe</th><th>Attributs principaux</th><th>Attributs ajoutés</th></tr>
+<tr><td><b>Club</b></td><td>numClub (PK), nomClub, adresse, numTelephone, nombreAdherents, ville, departement, region</td><td><b>dateCreation</b> — utile pour les statistiques club</td></tr>
+<tr><td><b>Utilisateur</b></td><td>numUtilisateur (PK), nom, prenom, adresse, login, motDePasse</td><td><b>email, dateNaissance</b> — nécessaire pour calculer l'âge (requête 1, 4)</td></tr>
+<tr><td><b>Administrateur</b></td><td>dateDebut</td><td>—</td></tr>
+<tr><td><b>Directeur</b></td><td>dateDebut</td><td>—</td></tr>
+<tr><td><b>Président</b></td><td>prime</td><td><b>dateElection</b> — suivi historique</td></tr>
+<tr><td><b>Compétiteur</b></td><td>datePremiereParticipation</td><td><b>categorie</b> (junior/senior/pro) — classement par niveau</td></tr>
+<tr><td><b>Évaluateur</b></td><td>specialite</td><td><b>niveau, experience</b> — critères d'affectation jury</td></tr>
+<tr><td><b>Concours</b></td><td>numConcours (PK), theme, dateDebut, dateFin, etat</td><td><b>description</b> — contexte du thème (requête 1, 3)</td></tr>
+<tr><td><b>Dessin</b></td><td>numDessin (PK), commentaire, classement, dateRemise, leDessin</td><td><b>titre</b> — identifiant humain du dessin</td></tr>
+</table>
+
+<h3>Associations et cardinalités</h3>
+<table>
+<tr><th>Association</th><th>Cardinalités</th><th>Description</th></tr>
+<tr><td>Club — Utilisateur</td><td>1..* — 1</td><td>Un utilisateur appartient à un club</td></tr>
+<tr><td>Directeur — Club</td><td>1 — 1</td><td>Un directeur dirige un club</td></tr>
+<tr><td>Président — Concours</td><td>1 — 1..*</td><td>Un président préside un ou plusieurs concours</td></tr>
+<tr><td>Club — Concours</td><td>* — *</td><td>Participation (≥6 clubs par concours)</td></tr>
+<tr><td>Compétiteur — Concours</td><td>* — *</td><td>Inscription</td></tr>
+<tr><td>Évaluateur — Concours</td><td>* — *</td><td>Inscription évaluateur</td></tr>
+<tr><td>Compétiteur — Dessin</td><td>1 — *</td><td>Un compétiteur soumet des dessins</td></tr>
+<tr><td>Concours — Dessin</td><td>1 — *</td><td>Un concours contient des dessins</td></tr>
+<tr><td>Évaluateur — Dessin</td><td>* — *</td><td>Via classe d'association Évaluation (note, commentaire, date)</td></tr>
+</table>
+
+<h3>Schéma conceptuel UML</h3>
+<p><em>Le schéma UML est fourni dans les fichiers : <code>uml/diagramme_classes.drawio.xml</code> et <code>uml/diagramme_classes.puml</code>. Insérer ici la capture PNG du diagramme exporté depuis draw.io.</em></p>
+
+<div class="note">
+<b>Justification des attributs ajoutés :</b><br>
+• <b>email</b> et <b>dateNaissance</b> (Utilisateur) : indispensables pour la communication et le calcul de l'âge des compétiteurs (requêtes 1 et 4).<br>
+• <b>description</b> (Concours) : demandée dans les requêtes 1, 2 et 3 pour décrire le contexte du concours.<br>
+• <b>titre</b> (Dessin) : permet d'identifier qualitativement un dessin dans l'interface.<br>
+• <b>categorie</b> (Compétiteur) : permet de classier junior/senior/pro pour des statistiques avancées.<br>
+• <b>niveau, experience</b> (Évaluateur) : critères pour l'affectation équitable des jurys.<br>
+• <b>dateCreation</b> (Club) : utile pour les statistiques sur l'ancienneté des clubs.
+</div>
+
+<!-- ============================================================ -->
+<h2>Question 2 : Analyse du schéma conceptuel — Contraintes</h2>
+
+<p>Le cahier des charges impose 8 contraintes métier. Pour chacune, nous analysons si elle est représentable dans le schéma UML, et comment elle sera implémentée en base de données.</p>
+
+<div class="constraint-box">
+<h4>C1 : Maximum 4 concours par année (1 par saison)</h4>
+<p><b>Représentée dans l'UML ?</b> Non — les cardinalités UML ne permettent pas d'exprimer une limite temporelle sur le nombre d'instances par année.</p>
+<p><b>Implémentation BD :</b> Trigger BEFORE INSERT sur CONCOURS qui compte le nombre de concours existants pour l'année de <code>dateDebut</code>. Si ≥ 4, erreur.</p>
+<p><b>Impact INSERT :</b> Respecter 4 concours par année (2023 et 2024 dans notre jeu de données).</p>
+</div>
+
+<div class="constraint-box">
+<h4>C2 : Un évaluateur ne peut pas évaluer plus de 8 dessins dans un même concours</h4>
+<p><b>Représentée dans l'UML ?</b> Non — pas exprimable par une simple cardinalité.</p>
+<p><b>Implémentation BD :</b> Trigger BEFORE INSERT sur EVALUATION qui compte les évaluations de cet évaluateur pour le concours du dessin. Si ≥ 8, erreur.</p>
+<p><b>Impact INSERT :</b> Chaque évaluateur évalue ≤ 8 dessins par concours.</p>
+</div>
+
+<div class="constraint-box">
+<h4>C3 : Un dessin doit être évalué par exactement 2 évaluateurs (jury)</h4>
+<p><b>Représentée dans l'UML ?</b> Partiellement — la cardinalité « 2 » côté évaluateur est visible sur l'association « évalue », mais le caractère exact est difficile à imposer au niveau conceptuel.</p>
+<p><b>Implémentation BD :</b> Trigger BEFORE INSERT sur EVALUATION vérifiant que le dessin n'a pas déjà 2 évaluations. Le contrôle « exactement 2 » (pas moins) est vérifié au niveau applicatif ou lors du changement d'état du concours.</p>
+<p><b>Impact INSERT :</b> Chaque dessin a exactement 2 lignes dans EVALUATION.</p>
+</div>
+
+<div class="constraint-box">
+<h4>C4 : Le président d'un concours ne peut pas être évaluateur ni compétiteur du même concours</h4>
+<p><b>Représentée dans l'UML ?</b> Non — c'est une contrainte inter-associations qui ne peut pas être modélisée par les seules cardinalités.</p>
+<p><b>Implémentation BD :</b> Trigger BEFORE INSERT sur INSCRIPTION_COMPETITEUR_CONCOURS et INSCRIPTION_EVALUATEUR_CONCOURS vérifiant que l'utilisateur n'est pas le président du concours.</p>
+<p><b>Impact INSERT :</b> Ne jamais inscrire le président comme compétiteur ou évaluateur de son propre concours.</p>
+</div>
+
+<div class="constraint-box">
+<h4>C5 : Un compétiteur ne peut pas déposer plus de 3 dessins dans un même concours</h4>
+<p><b>Représentée dans l'UML ?</b> Non — la cardinalité « * » est trop large pour exprimer cette limite.</p>
+<p><b>Implémentation BD :</b> Trigger BEFORE INSERT sur DESSIN comptant les dessins du compétiteur dans ce concours. Si ≥ 3, erreur.</p>
+<p><b>Impact INSERT :</b> Max 3 dessins par compétiteur par concours.</p>
+</div>
+
+<div class="constraint-box">
+<h4>C6 : Un concours doit mobiliser au moins 6 clubs</h4>
+<p><b>Représentée dans l'UML ?</b> Partiellement — la cardinalité « 6..* » pourrait être indiquée sur l'association « participe », mais en pratique on laisse « * » et on contrôle autrement.</p>
+<p><b>Implémentation BD :</b> Contrôle applicatif lors du changement d'état (pas_commence → en_cours). Vérification que ≥ 6 clubs sont inscrits.</p>
+<p><b>Impact INSERT :</b> Chaque concours a au minimum 6 clubs participants (dans notre base, les 12 clubs participent à chaque concours).</p>
+</div>
+
+<div class="constraint-box">
+<h4>C7 : Chaque club participant doit mobiliser ≥ 6 compétiteurs et ≥ 3 évaluateurs dans ce concours</h4>
+<p><b>Représentée dans l'UML ?</b> Non — contrainte croisant plusieurs associations.</p>
+<p><b>Implémentation BD :</b> Contrôle applicatif effectué par le directeur du club. Vérification avant le passage en état « en_cours ».</p>
+<p><b>Impact INSERT :</b> Pour chaque club dans un concours, nous insérons au minimum 6 compétiteurs et 3 évaluateurs.</p>
+</div>
+
+<div class="constraint-box">
+<h4>C8 : Un évaluateur d'un concours ne peut pas concourir dans ce même concours</h4>
+<p><b>Représentée dans l'UML ?</b> Non — contrainte croisée entre les rôles Compétiteur et Évaluateur sur un même concours.</p>
+<p><b>Implémentation BD :</b> Trigger BEFORE INSERT sur INSCRIPTION_COMPETITEUR_CONCOURS vérifiant que l'utilisateur n'est pas inscrit comme évaluateur du même concours, et inversement.</p>
+<p><b>Impact INSERT :</b> Aucun utilisateur n'est à la fois compétiteur et évaluateur d'un même concours.</p>
+</div>
+
+<h3>Synthèse</h3>
+<table>
+<tr><th>Contrainte</th><th>Dans UML ?</th><th>Implémentation</th></tr>
+<tr><td>C1 – Max 4 concours/an</td><td>Non</td><td>Trigger sur CONCOURS</td></tr>
+<tr><td>C2 – Max 8 évals/évaluateur/concours</td><td>Non</td><td>Trigger sur EVALUATION</td></tr>
+<tr><td>C3 – 2 évaluateurs par dessin</td><td>Partiellement</td><td>Trigger sur EVALUATION</td></tr>
+<tr><td>C4 – Président ≠ compétiteur/évaluateur</td><td>Non</td><td>Trigger sur INSCRIPTION</td></tr>
+<tr><td>C5 – Max 3 dessins/compétiteur/concours</td><td>Non</td><td>Trigger sur DESSIN</td></tr>
+<tr><td>C6 – Min 6 clubs par concours</td><td>Partiellement</td><td>Contrôle applicatif</td></tr>
+<tr><td>C7 – Min 6 comp. + 3 éval. par club</td><td>Non</td><td>Contrôle applicatif</td></tr>
+<tr><td>C8 – Évaluateur ≠ compétiteur</td><td>Non</td><td>Trigger croisé</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<h2>Question 3 : Le schéma logique</h2>
+
+<h3>a) Formalisme textuel pour le schéma logique</h3>
+
+<p>La transformation du schéma conceptuel vers le schéma logique suit les règles classiques :</p>
+<ul>
+<li><b>1:N</b> → clé étrangère du côté N</li>
+<li><b>N:N</b> → table d'association avec PK composée des deux FK</li>
+<li><b>Héritage</b> → table par sous-classe (PK = FK vers UTILISATEUR)</li>
+</ul>
+
+<pre>
+CLUB (<u>numClub</u>, nomClub (NN), adresse (NN), numTelephone, nombreAdherents,
+      ville (NN), departement (NN), region (NN), dateCreation)
+
+UTILISATEUR (<u>numUtilisateur</u>, nom (NN), prenom (NN), adresse, login (NN)(UNIQUE),
+             motDePasse (NN), email, dateNaissance, numClub #FK→CLUB)
+
+ADMINISTRATEUR (<u>numUtilisateur #FK→UTILISATEUR</u>, dateDebut)
+
+DIRECTEUR (<u>numUtilisateur #FK→UTILISATEUR</u>, dateDebut, numClub #FK→CLUB)
+
+PRESIDENT (<u>numUtilisateur #FK→UTILISATEUR</u>, prime, dateElection)
+
+COMPETITEUR (<u>numUtilisateur #FK→UTILISATEUR</u>, datePremiereParticipation, categorie)
+
+EVALUATEUR (<u>numUtilisateur #FK→UTILISATEUR</u>, specialite, niveau, experience)
+
+CONCOURS (<u>numConcours</u>, theme (NN), dateDebut (NN), dateFin (NN),
+          etat {'pas_commence','en_cours','attente','resultat','evalue'},
+          description, nbMaxDessinsParCompetiteur, nbMinClubs,
+          numPresident #FK→PRESIDENT)
+
+PARTICIPATION_CLUB_CONCOURS (<u>numClub #FK→CLUB, numConcours #FK→CONCOURS</u>)
+
+INSCRIPTION_COMPETITEUR_CONCOURS (<u>numCompetiteur #FK→COMPETITEUR,
+                                    numConcours #FK→CONCOURS</u>)
+
+INSCRIPTION_EVALUATEUR_CONCOURS (<u>numEvaluateur #FK→EVALUATEUR,
+                                   numConcours #FK→CONCOURS</u>)
+
+DESSIN (<u>numDessin</u>, commentaire, classement, dateRemise, leDessin, titre,
+        numCompetiteur #FK→COMPETITEUR (NN), numConcours #FK→CONCOURS (NN))
+
+EVALUATION (<u>numEvaluateur #FK→EVALUATEUR, numDessin #FK→DESSIN</u>,
+            dateEvaluation, note CHECK(0..20), commentaire, appreciation)
+</pre>
+
+<p><b>Total : 13 tables</b> (7 d'entités, 3 d'association N:N, 2 de contenu, 1 d'évaluation)</p>
+
+<h3>b) Formalisme graphique pour le schéma logique</h3>
+
+<p><em>Le schéma logique graphique est fourni dans les fichiers : <code>uml/schema_logique.drawio.xml</code> et <code>uml/schema_logique.puml</code>. Insérer ici la capture PNG du diagramme exporté depuis draw.io.</em></p>
+
+<!-- ============================================================ -->
+<h2>Question 4 : Le schéma physique</h2>
+
+<p>Le schéma physique MySQL est stocké dans le fichier <code>sql/creationConcoursDessins.sql</code>. Voici les types choisis :</p>
+
+<pre>
+-- TABLE : CLUB
+CREATE TABLE CLUB (
+    numClub INT AUTO_INCREMENT,
+    nomClub VARCHAR(100) NOT NULL,
+    adresse VARCHAR(255) NOT NULL,
+    numTelephone VARCHAR(20),
+    nombreAdherents INT DEFAULT 0,
+    ville VARCHAR(100) NOT NULL,
+    departement VARCHAR(100) NOT NULL,
+    region VARCHAR(100) NOT NULL,
+    dateCreation DATE,
+    PRIMARY KEY (numClub)
+) ENGINE=InnoDB;
+
+-- TABLE : UTILISATEUR
+CREATE TABLE UTILISATEUR (
+    numUtilisateur INT AUTO_INCREMENT,
+    nom VARCHAR(100) NOT NULL,
+    prenom VARCHAR(100) NOT NULL,
+    adresse VARCHAR(255),
+    login VARCHAR(50) NOT NULL UNIQUE,
+    motDePasse VARCHAR(255) NOT NULL,
+    email VARCHAR(150),
+    dateNaissance DATE,
+    numClub INT NOT NULL,
+    PRIMARY KEY (numUtilisateur),
+    FOREIGN KEY (numClub) REFERENCES CLUB(numClub)
+) ENGINE=InnoDB;
+
+-- TABLE : ADMINISTRATEUR
+CREATE TABLE ADMINISTRATEUR (
+    numUtilisateur INT,
+    dateDebut DATE NOT NULL,
+    PRIMARY KEY (numUtilisateur),
+    FOREIGN KEY (numUtilisateur) REFERENCES UTILISATEUR(numUtilisateur)
+) ENGINE=InnoDB;
+
+-- TABLE : DIRECTEUR
+CREATE TABLE DIRECTEUR (
+    numUtilisateur INT,
+    dateDebut DATE NOT NULL,
+    numClub INT NOT NULL,
+    PRIMARY KEY (numUtilisateur),
+    FOREIGN KEY (numUtilisateur) REFERENCES UTILISATEUR(numUtilisateur),
+    FOREIGN KEY (numClub) REFERENCES CLUB(numClub)
+) ENGINE=InnoDB;
+
+-- TABLE : PRESIDENT
+CREATE TABLE PRESIDENT (
+    numUtilisateur INT,
+    prime DECIMAL(10,2) DEFAULT 0.00,
+    dateElection DATE,
+    PRIMARY KEY (numUtilisateur),
+    FOREIGN KEY (numUtilisateur) REFERENCES UTILISATEUR(numUtilisateur)
+) ENGINE=InnoDB;
+
+-- TABLE : COMPETITEUR
+CREATE TABLE COMPETITEUR (
+    numUtilisateur INT,
+    datePremiereParticipation DATE,
+    categorie VARCHAR(50) DEFAULT 'senior',
+    PRIMARY KEY (numUtilisateur),
+    FOREIGN KEY (numUtilisateur) REFERENCES UTILISATEUR(numUtilisateur)
+) ENGINE=InnoDB;
+
+-- TABLE : EVALUATEUR
+CREATE TABLE EVALUATEUR (
+    numUtilisateur INT,
+    specialite VARCHAR(100) NOT NULL,
+    niveau VARCHAR(50) DEFAULT 'intermediaire',
+    experience INT DEFAULT 0,
+    PRIMARY KEY (numUtilisateur),
+    FOREIGN KEY (numUtilisateur) REFERENCES UTILISATEUR(numUtilisateur)
+) ENGINE=InnoDB;
+
+-- TABLE : CONCOURS
+CREATE TABLE CONCOURS (
+    numConcours INT AUTO_INCREMENT,
+    theme VARCHAR(200) NOT NULL,
+    dateDebut DATE NOT NULL,
+    dateFin DATE NOT NULL,
+    etat ENUM('pas_commence','en_cours','attente','resultat','evalue')
+         NOT NULL DEFAULT 'pas_commence',
+    description TEXT,
+    nbMaxDessinsParCompetiteur INT DEFAULT 3,
+    nbMinClubs INT DEFAULT 6,
+    numPresident INT NOT NULL,
+    PRIMARY KEY (numConcours),
+    FOREIGN KEY (numPresident) REFERENCES PRESIDENT(numUtilisateur)
+) ENGINE=InnoDB;
+
+-- TABLE : PARTICIPATION_CLUB_CONCOURS
+CREATE TABLE PARTICIPATION_CLUB_CONCOURS (
+    numClub INT,
+    numConcours INT,
+    PRIMARY KEY (numClub, numConcours),
+    FOREIGN KEY (numClub) REFERENCES CLUB(numClub),
+    FOREIGN KEY (numConcours) REFERENCES CONCOURS(numConcours)
+) ENGINE=InnoDB;
+
+-- TABLE : INSCRIPTION_COMPETITEUR_CONCOURS
+CREATE TABLE INSCRIPTION_COMPETITEUR_CONCOURS (
+    numCompetiteur INT,
+    numConcours INT,
+    PRIMARY KEY (numCompetiteur, numConcours),
+    FOREIGN KEY (numCompetiteur) REFERENCES COMPETITEUR(numUtilisateur),
+    FOREIGN KEY (numConcours) REFERENCES CONCOURS(numConcours)
+) ENGINE=InnoDB;
+
+-- TABLE : INSCRIPTION_EVALUATEUR_CONCOURS
+CREATE TABLE INSCRIPTION_EVALUATEUR_CONCOURS (
+    numEvaluateur INT,
+    numConcours INT,
+    PRIMARY KEY (numEvaluateur, numConcours),
+    FOREIGN KEY (numEvaluateur) REFERENCES EVALUATEUR(numUtilisateur),
+    FOREIGN KEY (numConcours) REFERENCES CONCOURS(numConcours)
+) ENGINE=InnoDB;
+
+-- TABLE : DESSIN
+CREATE TABLE DESSIN (
+    numDessin INT AUTO_INCREMENT,
+    commentaire TEXT,
+    classement INT,
+    dateRemise DATE,
+    leDessin VARCHAR(500),
+    titre VARCHAR(200),
+    numCompetiteur INT NOT NULL,
+    numConcours INT NOT NULL,
+    PRIMARY KEY (numDessin),
+    FOREIGN KEY (numCompetiteur) REFERENCES COMPETITEUR(numUtilisateur),
+    FOREIGN KEY (numConcours) REFERENCES CONCOURS(numConcours)
+) ENGINE=InnoDB;
+
+-- TABLE : EVALUATION
+CREATE TABLE EVALUATION (
+    numEvaluateur INT,
+    numDessin INT,
+    dateEvaluation DATE,
+    note INT CHECK(note >= 0 AND note <= 20),
+    commentaire TEXT,
+    appreciation ENUM('insuffisant','passable','bien','tres_bien','excellent'),
+    PRIMARY KEY (numEvaluateur, numDessin),
+    FOREIGN KEY (numEvaluateur) REFERENCES EVALUATEUR(numUtilisateur),
+    FOREIGN KEY (numDessin) REFERENCES DESSIN(numDessin)
+) ENGINE=InnoDB;
+</pre>
+
+<p><b>Choix des types :</b></p>
+<ul>
+<li><code>INT AUTO_INCREMENT</code> pour les identifiants (génération auto)</li>
+<li><code>VARCHAR(n)</code> pour les chaînes de taille connue</li>
+<li><code>TEXT</code> pour les commentaires et descriptions (taille variable)</li>
+<li><code>DATE</code> pour les dates</li>
+<li><code>DECIMAL(10,2)</code> pour les montants (prime du président)</li>
+<li><code>ENUM</code> pour les valeurs contraintes (état concours, catégorie, etc.)</li>
+<li><code>CHECK</code> pour la contrainte de note entre 0 et 20</li>
+</ul>
+
+<!-- ============================================================ -->
+<h2>Question 5 : Remplissage de la BD</h2>
+
+<p>Le fichier <code>sql/insertionConcoursDessins.sql</code> contient toutes les insertions. Voici un résumé des données insérées :</p>
+
+<table>
+<tr><th>Table</th><th>Nombre de lignes</th><th>Détails</th></tr>
+<tr><td>CLUB</td><td>12</td><td>12 clubs répartis dans 12 villes françaises</td></tr>
+<tr><td>UTILISATEUR</td><td>~241</td><td>1 admin + 12 directeurs + 8 présidents + ~184 compétiteurs + 36 évaluateurs</td></tr>
+<tr><td>ADMINISTRATEUR</td><td>1</td><td>Antoine Lefebvre</td></tr>
+<tr><td>DIRECTEUR</td><td>12</td><td>1 par club</td></tr>
+<tr><td>PRESIDENT</td><td>8</td><td>1 par concours</td></tr>
+<tr><td>COMPETITEUR</td><td>~184</td><td>Catégories : junior, senior, pro</td></tr>
+<tr><td>EVALUATEUR</td><td>36</td><td>3 par club, spécialités variées</td></tr>
+<tr><td>CONCOURS</td><td>8</td><td>4 en 2023 + 4 en 2024 (saisons variées)</td></tr>
+<tr><td>PARTICIPATION_CLUB_CONCOURS</td><td>96</td><td>12 clubs × 8 concours</td></tr>
+<tr><td>INSCRIPTION_COMPETITEUR_CONCOURS</td><td>~1400</td><td>Compétiteurs inscrits aux concours</td></tr>
+<tr><td>INSCRIPTION_EVALUATEUR_CONCOURS</td><td>~288</td><td>36 évaluateurs × 8 concours</td></tr>
+<tr><td>DESSIN</td><td>~330</td><td>Titres et techniques variés</td></tr>
+<tr><td>EVALUATION</td><td>~660</td><td>2 évaluations par dessin, notes 0-20</td></tr>
+</table>
+
+<h3>Respect des contraintes</h3>
+<ul>
+<li><b>C1</b> : 4 concours par année (2023 : concours 1-4, 2024 : concours 5-8) ✓</li>
+<li><b>C2</b> : Max 8 évaluations par évaluateur par concours ✓</li>
+<li><b>C3</b> : Exactement 2 évaluations par dessin ✓</li>
+<li><b>C4</b> : Les présidents ne sont jamais compétiteurs ou évaluateurs de leur concours ✓</li>
+<li><b>C5</b> : Max 3 dessins par compétiteur par concours ✓</li>
+<li><b>C6</b> : 12 clubs participent à chaque concours (≥ 6) ✓</li>
+<li><b>C7</b> : Chaque club a ≥ 6 compétiteurs et ≥ 3 évaluateurs par concours ✓</li>
+<li><b>C8</b> : Un évaluateur n'est jamais compétiteur du même concours ✓</li>
+</ul>
+
+<h3>États des concours</h3>
+<table>
+<tr><th>Concours</th><th>Thème</th><th>État</th></tr>
+<tr><td>1 (Hiver 2023)</td><td>Paysages d'hiver</td><td>evalue</td></tr>
+<tr><td>2 (Printemps 2023)</td><td>Faune sauvage</td><td>evalue</td></tr>
+<tr><td>3 (Été 2023)</td><td>Villes du monde</td><td>evalue</td></tr>
+<tr><td>4 (Automne 2023)</td><td>Portraits d'automne</td><td>evalue</td></tr>
+<tr><td>5 (Hiver 2024)</td><td>Océans et rivières</td><td>evalue</td></tr>
+<tr><td>6 (Printemps 2024)</td><td>Patrimoine français</td><td>evalue</td></tr>
+<tr><td>7 (Été 2024)</td><td>Art et émotions</td><td>attente</td></tr>
+<tr><td>8 (Automne 2024)</td><td>Nature morte contemporaine</td><td>en_cours</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<h2>Question 6 : Interrogation de la BD — 10 Requêtes SQL</h2>
+
+<h3>Requête 1 (imposée) — Compétiteurs ayant participé en 2024</h3>
+<p><b>En français :</b> Afficher le nom, l'adresse et l'âge de tous les compétiteurs qui ont participé à un concours en 2024. Afficher aussi la description du concours, la date de début et la date de fin, le club du compétiteur, le département et la région.</p>
+<pre>
+SELECT
+    u.nom, u.adresse,
+    TIMESTAMPDIFF(YEAR, u.dateNaissance, CURDATE()) AS age,
+    co.description, co.dateDebut, co.dateFin,
+    cl.nomClub, cl.departement, cl.region
+FROM UTILISATEUR u
+JOIN COMPETITEUR c ON u.numUtilisateur = c.numUtilisateur
+JOIN INSCRIPTION_COMPETITEUR_CONCOURS icc ON c.numUtilisateur = icc.numCompetiteur
+JOIN CONCOURS co ON icc.numConcours = co.numConcours
+JOIN CLUB cl ON u.numClub = cl.numClub
+WHERE YEAR(co.dateDebut) = 2024
+ORDER BY u.nom, co.dateDebut;
+</pre>
+
+<h3>Requête 2 (imposée) — Dessins évalués en 2023 par note croissante</h3>
+<p><b>En français :</b> Afficher par ordre croissant de la note tous les dessins évalués en 2023 : numéro du dessin, note attribuée, nom du compétiteur, description et thème du concours.</p>
+<pre>
+SELECT
+    d.numDessin, ev.note,
+    u.nom AS nom_competiteur,
+    co.description, co.theme
+FROM DESSIN d
+JOIN EVALUATION ev ON d.numDessin = ev.numDessin
+JOIN CONCOURS co ON d.numConcours = co.numConcours
+JOIN UTILISATEUR u ON d.numCompetiteur = u.numUtilisateur
+WHERE YEAR(ev.dateEvaluation) = 2023
+ORDER BY ev.note ASC;
+</pre>
+
+<h3>Requête 3 (imposée) — Informations détaillées de tous les dessins évalués</h3>
+<p><b>En français :</b> Afficher le numéro, l'année et la description du concours ; le nom du compétiteur ; le numéro et le commentaire du dessin ; la note et le commentaire de l'évaluation ; le nom de l'évaluateur.</p>
+<pre>
+SELECT
+    d.numDessin,
+    YEAR(co.dateDebut) AS annee,
+    co.description,
+    CONCAT(u_comp.nom, ' ', u_comp.prenom) AS auteur,
+    d.commentaire AS commentaire_dessin,
+    ev.note,
+    ev.commentaire AS commentaire_evaluation,
+    CONCAT(u_eval.nom, ' ', u_eval.prenom) AS evaluateur
+FROM DESSIN d
+JOIN CONCOURS co ON d.numConcours = co.numConcours
+JOIN UTILISATEUR u_comp ON d.numCompetiteur = u_comp.numUtilisateur
+JOIN EVALUATION ev ON d.numDessin = ev.numDessin
+JOIN UTILISATEUR u_eval ON ev.numEvaluateur = u_eval.numUtilisateur
+ORDER BY co.numConcours, d.numDessin;
+</pre>
+
+<h3>Requête 4 (imposée) — Compétiteurs ayant participé à TOUS les concours 2023-2024</h3>
+<p><b>En français :</b> Nom, prénom et âge des compétiteurs qui ont participé à tous les concours organisés en 2023 et 2024, triés par âge croissant. Il s'agit d'une <b>division relationnelle</b>.</p>
+<pre>
+SELECT
+    u.nom, u.prenom,
+    TIMESTAMPDIFF(YEAR, u.dateNaissance, CURDATE()) AS age
+FROM UTILISATEUR u
+JOIN COMPETITEUR c ON u.numUtilisateur = c.numUtilisateur
+JOIN INSCRIPTION_COMPETITEUR_CONCOURS icc ON c.numUtilisateur = icc.numCompetiteur
+JOIN CONCOURS co ON icc.numConcours = co.numConcours
+WHERE YEAR(co.dateDebut) IN (2023, 2024)
+GROUP BY u.numUtilisateur, u.nom, u.prenom, u.dateNaissance
+HAVING COUNT(DISTINCT co.numConcours) = (
+    SELECT COUNT(*) FROM CONCOURS WHERE YEAR(dateDebut) IN (2023, 2024)
+)
+ORDER BY age ASC;
+</pre>
+
+<h3>Requête 5 (imposée) — Région avec la meilleure moyenne</h3>
+<p><b>En français :</b> Nom de la région qui a la meilleure moyenne des notes des dessins proposés. Afficher la région et la moyenne.</p>
+<pre>
+SELECT
+    cl.region,
+    AVG(ev.note) AS moyenne_notes
+FROM EVALUATION ev
+JOIN DESSIN d ON ev.numDessin = d.numDessin
+JOIN UTILISATEUR u ON d.numCompetiteur = u.numUtilisateur
+JOIN CLUB cl ON u.numClub = cl.numClub
+GROUP BY cl.region
+ORDER BY moyenne_notes DESC
+LIMIT 1;
+</pre>
+
+<h3>Requête 6 (libre) — Classement final d'un concours (concours 1)</h3>
+<p><b>En français :</b> Classement final d'un concours évalué — moyenne des 2 notes par dessin, tri décroissant avec rang.</p>
+<pre>
+SELECT
+    d.numDessin, d.titre,
+    CONCAT(u.nom, ' ', u.prenom) AS competiteur,
+    cl.nomClub,
+    AVG(ev.note) AS moyenne,
+    RANK() OVER (ORDER BY AVG(ev.note) DESC) AS classement
+FROM DESSIN d
+JOIN EVALUATION ev ON d.numDessin = ev.numDessin
+JOIN UTILISATEUR u ON d.numCompetiteur = u.numUtilisateur
+JOIN CLUB cl ON u.numClub = cl.numClub
+WHERE d.numConcours = 1
+GROUP BY d.numDessin, d.titre, u.nom, u.prenom, cl.nomClub
+ORDER BY moyenne DESC;
+</pre>
+
+<h3>Requête 7 (libre) — Nombre de dessins par club et par concours</h3>
+<p><b>En français :</b> Nombre de dessins soumis par club et par concours.</p>
+<pre>
+SELECT
+    cl.nomClub, co.theme AS concours,
+    COUNT(d.numDessin) AS nb_dessins
+FROM CLUB cl
+JOIN UTILISATEUR u ON cl.numClub = u.numClub
+JOIN DESSIN d ON u.numUtilisateur = d.numCompetiteur
+JOIN CONCOURS co ON d.numConcours = co.numConcours
+GROUP BY cl.numClub, cl.nomClub, co.numConcours, co.theme
+ORDER BY co.numConcours, cl.nomClub;
+</pre>
+
+<h3>Requête 8 (libre) — Taux de participation par concours</h3>
+<p><b>En français :</b> Nombre de compétiteurs inscrits par concours et pourcentage de participation.</p>
+<pre>
+SELECT
+    co.numConcours, co.theme, co.etat,
+    COUNT(icc.numCompetiteur) AS nb_competiteurs,
+    (SELECT COUNT(*) FROM COMPETITEUR) AS total_competiteurs,
+    ROUND(COUNT(icc.numCompetiteur) * 100.0
+          / (SELECT COUNT(*) FROM COMPETITEUR), 1) AS taux_participation_pct
+FROM CONCOURS co
+LEFT JOIN INSCRIPTION_COMPETITEUR_CONCOURS icc
+  ON co.numConcours = icc.numConcours
+GROUP BY co.numConcours, co.theme, co.etat
+ORDER BY co.numConcours;
+</pre>
+
+<h3>Requête 9 (libre) — Dessins en attente d'évaluation complète</h3>
+<p><b>En français :</b> Concours en attente dont il manque des évaluations (dessins pas encore évalués par 2 évaluateurs).</p>
+<pre>
+SELECT
+    co.numConcours, co.theme,
+    d.numDessin, d.titre,
+    COUNT(ev.numEvaluateur) AS nb_evaluations,
+    (2 - COUNT(ev.numEvaluateur)) AS evaluations_manquantes
+FROM CONCOURS co
+JOIN DESSIN d ON co.numConcours = d.numConcours
+LEFT JOIN EVALUATION ev ON d.numDessin = ev.numDessin
+WHERE co.etat = 'attente'
+GROUP BY co.numConcours, co.theme, d.numDessin, d.titre
+HAVING COUNT(ev.numEvaluateur) &lt; 2
+ORDER BY co.numConcours, d.numDessin;
+</pre>
+
+<h3>Requête 10 (libre) — Évaluateurs les plus chargés par concours</h3>
+<p><b>En français :</b> Liste des évaluateurs ayant évalué le plus de dessins dans un concours, avec le nombre de places restantes (max 8).</p>
+<pre>
+SELECT
+    co.numConcours, co.theme,
+    CONCAT(u.nom, ' ', u.prenom) AS evaluateur,
+    COUNT(ev.numDessin) AS nb_dessins_evalues,
+    (8 - COUNT(ev.numDessin)) AS places_restantes
+FROM EVALUATION ev
+JOIN DESSIN d ON ev.numDessin = d.numDessin
+JOIN CONCOURS co ON d.numConcours = co.numConcours
+JOIN UTILISATEUR u ON ev.numEvaluateur = u.numUtilisateur
+GROUP BY co.numConcours, co.theme, ev.numEvaluateur, u.nom, u.prenom
+HAVING COUNT(ev.numDessin) >= 3
+ORDER BY nb_dessins_evalues DESC, co.numConcours;
+</pre>
+
+<h3>Triggers (5)</h3>
+
+<h4>Trigger 1 : Max 3 dessins par compétiteur par concours</h4>
+<pre>
+CREATE TRIGGER trg_max_3_dessins_par_competiteur
+BEFORE INSERT ON DESSIN
+FOR EACH ROW
+BEGIN
+    DECLARE nb_dessins INT;
+    SELECT COUNT(*) INTO nb_dessins
+    FROM DESSIN
+    WHERE numCompetiteur = NEW.numCompetiteur
+      AND numConcours = NEW.numConcours;
+    IF nb_dessins >= 3 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Max 3 dessins par compétiteur par concours.';
+    END IF;
+END;
+</pre>
+
+<h4>Trigger 2 : Max 8 évaluations par évaluateur par concours</h4>
+<pre>
+CREATE TRIGGER trg_max_8_evaluations_par_evaluateur
+BEFORE INSERT ON EVALUATION
+FOR EACH ROW
+BEGIN
+    DECLARE nb_evals INT;
+    DECLARE v_numConcours INT;
+    SELECT numConcours INTO v_numConcours
+    FROM DESSIN WHERE numDessin = NEW.numDessin;
+    SELECT COUNT(*) INTO nb_evals
+    FROM EVALUATION ev
+    JOIN DESSIN d ON ev.numDessin = d.numDessin
+    WHERE ev.numEvaluateur = NEW.numEvaluateur
+      AND d.numConcours = v_numConcours;
+    IF nb_evals >= 8 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Max 8 évaluations par évaluateur par concours.';
+    END IF;
+END;
+</pre>
+
+<h4>Trigger 3 : Max 2 évaluations par dessin</h4>
+<pre>
+CREATE TRIGGER trg_max_2_evaluations_par_dessin
+BEFORE INSERT ON EVALUATION
+FOR EACH ROW
+BEGIN
+    DECLARE nb_evals_dessin INT;
+    SELECT COUNT(*) INTO nb_evals_dessin
+    FROM EVALUATION WHERE numDessin = NEW.numDessin;
+    IF nb_evals_dessin >= 2 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Un dessin ne peut pas avoir plus de 2 évaluations.';
+    END IF;
+END;
+</pre>
+
+<h4>Trigger 4 : Président ne peut pas être compétiteur du même concours</h4>
+<pre>
+CREATE TRIGGER trg_president_pas_competiteur
+BEFORE INSERT ON INSCRIPTION_COMPETITEUR_CONCOURS
+FOR EACH ROW
+BEGIN
+    DECLARE v_president INT;
+    SELECT numPresident INTO v_president
+    FROM CONCOURS WHERE numConcours = NEW.numConcours;
+    IF NEW.numCompetiteur = v_president THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Le président ne peut pas être compétiteur de son concours.';
+    END IF;
+END;
+</pre>
+
+<h4>Trigger 5 : Évaluateur ne peut pas concourir dans le même concours</h4>
+<pre>
+CREATE TRIGGER trg_evaluateur_pas_competiteur
+BEFORE INSERT ON INSCRIPTION_COMPETITEUR_CONCOURS
+FOR EACH ROW
+BEGIN
+    DECLARE nb_eval INT;
+    SELECT COUNT(*) INTO nb_eval
+    FROM INSCRIPTION_EVALUATEUR_CONCOURS
+    WHERE numEvaluateur = NEW.numCompetiteur
+      AND numConcours = NEW.numConcours;
+    IF nb_eval > 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Un évaluateur ne peut pas concourir dans le même concours.';
+    END IF;
+END;
+</pre>
+
+<!-- ============================================================ -->
+<h2>Question 7 : Interface WEB</h2>
+
+<p>L'interface web a été développée avec les technologies suivantes :</p>
+<ul>
+<li><b>Frontend :</b> React 18, TypeScript, Tailwind CSS, shadcn/ui, Recharts</li>
+<li><b>Backend :</b> Node.js, Express, SQLite (sql.js)</li>
+<li><b>Architecture :</b> SPA avec API REST, 14 pages, rôle-based access control</li>
+</ul>
+
+<h3>1) Page d'authentification</h3>
+<p>La page de connexion permet à un utilisateur de s'authentifier avec son login et son mot de passe. Le système identifie automatiquement le rôle de l'utilisateur (administrateur, directeur, président, compétiteur, évaluateur) et redirige vers la page appropriée.</p>
+<p><em>L'interface présente un formulaire moderne avec validation en temps réel, un message d'erreur clair en cas d'identifiants incorrects, et des comptes de démonstration affichés pour faciliter les tests.</em></p>
+
+<table>
+<tr><th>Login</th><th>Mot de passe</th><th>Rôle</th></tr>
+<tr><td>adminAL</td><td>Syst3m!2020</td><td>Administrateur</td></tr>
+<tr><td>jmarch</td><td>aZ3k9pQ</td><td>Compétiteur</td></tr>
+<tr><td>sbern</td><td>wW2i5pM</td><td>Évaluateur</td></tr>
+<tr><td>cmorel</td><td>Hk4$pLm9</td><td>Directeur</td></tr>
+</table>
+
+<h3>2) Tableau de bord (Dashboard)</h3>
+<p>Page d'accueil avec statistiques globales : nombre de clubs, utilisateurs, concours, dessins, évaluations, note moyenne. Graphiques : état des concours (barres), répartition des catégories (camembert), top clubs (barres horizontales).</p>
+
+<h3>3) Page Administrateur</h3>
+<p>L'administrateur a accès à toutes les pages :</p>
+<ul>
+<li><b>Clubs</b> : liste, ajout, modification, suppression de clubs. Filtrage par région/ville.</li>
+<li><b>Utilisateurs</b> : CRUD complet, filtrage par rôle, ajout avec assignation de rôle.</li>
+<li><b>Concours</b> : création, modification, changement d'état, assignation de président.</li>
+<li><b>Inscriptions</b> : gestion des inscriptions clubs, compétiteurs, évaluateurs aux concours.</li>
+<li><b>Jury</b> : affectation de 2 évaluateurs par dessin.</li>
+</ul>
+
+<h3>4) Page Compétiteur</h3>
+<p>Le compétiteur peut :</p>
+<ul>
+<li>Voir les concours auxquels il est inscrit</li>
+<li>Consulter ses dessins soumis et leurs notes</li>
+<li>Voir les résultats et classements</li>
+</ul>
+
+<h3>5) Page Évaluateur</h3>
+<p>L'évaluateur peut :</p>
+<ul>
+<li>Voir les dessins qui lui sont assignés pour évaluation</li>
+<li>Saisir/modifier une note (0-20) avec commentaire et appréciation</li>
+<li>Consulter les résultats des concours évalués</li>
+</ul>
+
+<h3>6) Pages additionnelles</h3>
+<ul>
+<li><b>Résultats</b> : classement par concours avec médailles, palmarès par club (graphique), top 10 compétiteurs.</li>
+<li><b>Requêtes TP</b> : exécution et affichage des 10 requêtes SQL avec résultats en tableau.</li>
+<li><b>Dossier TP</b> : accès à toute la documentation, au SQL, et aux schémas UML. Console SQL intégrée pour tester des requêtes libres.</li>
+<li><b>Console SQL</b> : permet d'exécuter du SQL directement sur la base (SELECT, INSERT, UPDATE, DELETE).</li>
+</ul>
+
+<p><em>Insérer ici des captures d'écran des différentes pages de l'application.</em></p>
+
+<div class="footer">
+  <p>Conception d'un SI pour la gestion des concours de dessins — CNAM ESAIP 2025-2026</p>
+</div>
+
+</body>
+</html>

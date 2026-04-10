@@ -42,7 +42,6 @@ image/
 # Livrables Word/PDF (local only)
 *.docx
 *.pdf
-Document_Reponses_Projet.html
 
 # Misc
 .lovable/
