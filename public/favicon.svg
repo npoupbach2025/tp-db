@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366f1"/>
+      <stop offset="100%" style="stop-color:#a855f7"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="url(#bg)"/>
+  <!-- Palette -->
+  <ellipse cx="30" cy="34" rx="18" ry="15" fill="#fff" opacity="0.95"/>
+  <circle cx="22" cy="28" r="3.5" fill="#ef4444"/>
+  <circle cx="30" cy="24" r="3.5" fill="#f59e0b"/>
+  <circle cx="38" cy="28" r="3.5" fill="#22c55e"/>
+  <circle cx="24" cy="38" r="3.5" fill="#3b82f6"/>
+  <circle cx="34" cy="40" r="3" fill="#a855f7"/>
+  <!-- Brush -->
+  <rect x="42" y="12" width="5" height="20" rx="2" fill="#fbbf24" transform="rotate(35 44 22)"/>
+  <rect x="40" y="28" width="5" height="8" rx="1" fill="#92400e" transform="rotate(35 42 32)"/>
+  <line x1="41" y1="34" x2="38" y2="38" stroke="#78350f" stroke-width="1.5" stroke-linecap="round" transform="rotate(35 39 36)"/>
+</svg>
