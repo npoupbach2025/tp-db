@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const { getDb } = require('../database');
 const { getUserRole } = require('../lib/userRole');
+const { notifyLogin } = require('../lib/discord');
+const { getClientIp } = require('../middleware/activityLogger');
 
 // POST /api/auth/login
 router.post('/login', (req, res) => {
@@ -27,6 +29,9 @@ router.post('/login', (req, res) => {
 
   // Récupérer le nom du club
   const club = db.prepare('SELECT nomClub FROM CLUB WHERE numClub = ?').get(user.numClub);
+
+  // Discord notification
+  notifyLogin(getClientIp(req), user, role).catch(() => {});
 
   res.json({
     user: {

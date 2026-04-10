@@ -3,8 +3,10 @@ const cors = require('cors');
 const path = require('path');
 const { initDb, closeDb, startAutoSave } = require('./database');
 const { requireAuth } = require('./middleware/auth');
+const { visitTracker, actionTracker } = require('./middleware/activityLogger');
 
 const app = express();
+app.set('trust proxy', true);
 const PORT = 3001;
 const tpProjectRoot = process.env.TP_PROJECT_ROOT || path.resolve(__dirname, '../tp');
 const tpDocsDir = path.join(tpProjectRoot, 'docs');
@@ -13,6 +15,10 @@ const uploadsDir = path.join(__dirname, 'uploads');
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Activity tracking (Discord notifications)
+app.use(visitTracker);
+app.use(actionTracker);
 
 // Routes API
 app.use('/api/auth', require('./routes/auth'));
