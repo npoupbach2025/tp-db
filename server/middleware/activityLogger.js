@@ -68,6 +68,10 @@ function actionTracker(req, res, next) {
   const originalEnd = res.end;
   res.end = function (...args) {
     originalEnd.apply(res, args);
+    // Don't notify 401/403 (unauthenticated noise) or 304 (not modified)
+    if (res.statusCode === 401 || res.statusCode === 403 || res.statusCode === 304) {
+      return;
+    }
     const user = req.auth?.user || null;
     notifyAction(ip, user, req.method, req.path, res.statusCode).catch(() => {});
   };
