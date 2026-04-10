@@ -21,8 +21,7 @@ sudo certbot --nginx -d some1one.me -d www.some1one.me
 
 ```bash
 # 1. Cloner le dépôt
-REPO_URL=https://github.com/VOTRE_USER/VOTRE_REPO.git
-git clone $REPO_URL /opt/concours-dessins
+git clone https://github.com/npoupbach2025/tp-db.git /opt/concours-dessins
 cd /opt/concours-dessins
 
 # 2. Lancer
@@ -41,7 +40,7 @@ L'application est accessible sur https://some1one.me
 ### Manuelle
 ```bash
 cd /opt/concours-dessins
-git pull origin main
+git pull origin master
 docker compose down && docker compose up -d --build
 ```
 
@@ -54,7 +53,7 @@ Configurez ces secrets dans GitHub → Settings → Secrets and variables → Ac
 | `SERVER_USER`   | `root` (ou votre user SSH) |
 | `SSH_PRIVATE_KEY`| Votre clé privée SSH       |
 
-Chaque `git push` sur `main` déclenche automatiquement le redéploiement.
+Chaque `git push` sur `master` déclenche automatiquement le redéploiement.
 
 ### Script deploy.sh
 ```bash

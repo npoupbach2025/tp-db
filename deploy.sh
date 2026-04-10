@@ -4,7 +4,7 @@
 set -euo pipefail
 
 APP_DIR="/opt/concours-dessins"
-REPO_URL="${REPO_URL:-}"  # Set your GitHub repo URL
+REPO_URL="https://github.com/npoupbach2025/tp-db.git"
 
 echo "=== Déploiement Concours de Dessins ==="
 
@@ -12,13 +12,8 @@ echo "=== Déploiement Concours de Dessins ==="
 if [ -d "$APP_DIR" ]; then
     echo ">> Pull des dernières modifications..."
     cd "$APP_DIR"
-    git pull origin main
+    git pull origin master
 else
-    if [ -z "$REPO_URL" ]; then
-        echo "Erreur: REPO_URL non défini et le dossier $APP_DIR n'existe pas."
-        echo "Usage: REPO_URL=https://github.com/user/repo.git ./deploy.sh"
-        exit 1
-    fi
     echo ">> Clonage initial du dépôt..."
     git clone "$REPO_URL" "$APP_DIR"
     cd "$APP_DIR"
