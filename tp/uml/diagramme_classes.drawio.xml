@@ -1,0 +1,254 @@
+<mxfile host="app.diagrams.net" modified="2024-01-01T00:00:00.000Z" agent="draw.io" version="22.1.2" type="device">
+  <diagram id="uml-classes" name="Diagramme de classes UML">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- CLUB -->
+        <mxCell id="club" value="Club" style="swimlane;fontStyle=1;align=center;startSize=26;container=1;collapsible=0;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="260" height="230" as="geometry"/>
+        </mxCell>
+        <mxCell id="club_attr" value="+ numClub : INT &lt;&lt;PK&gt;&gt;&#xa;+ nomClub : VARCHAR(100)&#xa;+ adresse : VARCHAR(255)&#xa;+ numTelephone : VARCHAR(20)&#xa;+ nombreAdherents : INT&#xa;+ ville : VARCHAR(100)&#xa;+ departement : VARCHAR(100)&#xa;+ region : VARCHAR(100)&#xa;+ dateCreation : DATE" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;whiteSpace=wrap;" vertex="1" parent="club">
+          <mxGeometry y="26" width="260" height="204" as="geometry"/>
+        </mxCell>
+
+        <!-- UTILISATEUR -->
+        <mxCell id="utilisateur" value="Utilisateur" style="swimlane;fontStyle=1;align=center;startSize=26;container=1;collapsible=0;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="440" y="40" width="260" height="210" as="geometry"/>
+        </mxCell>
+        <mxCell id="utilisateur_attr" value="+ numUtilisateur : INT &lt;&lt;PK&gt;&gt;&#xa;+ nom : VARCHAR(100)&#xa;+ prenom : VARCHAR(100)&#xa;+ adresse : VARCHAR(255)&#xa;+ login : VARCHAR(50)&#xa;+ motDePasse : VARCHAR(255)&#xa;+ email : VARCHAR(150)&#xa;+ dateNaissance : DATE" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;whiteSpace=wrap;" vertex="1" parent="utilisateur">
+          <mxGeometry y="26" width="260" height="184" as="geometry"/>
+        </mxCell>
+
+        <!-- ADMINISTRATEUR -->
+        <mxCell id="admin" value="Administrateur" style="swimlane;fontStyle=1;align=center;startSize=26;container=1;collapsible=0;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="160" y="360" width="200" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="admin_attr" value="+ dateDebut : DATE" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;whiteSpace=wrap;" vertex="1" parent="admin">
+          <mxGeometry y="26" width="200" height="34" as="geometry"/>
+        </mxCell>
+
+        <!-- DIRECTEUR -->
+        <mxCell id="directeur" value="Directeur" style="swimlane;fontStyle=1;align=center;startSize=26;container=1;collapsible=0;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="380" y="360" width="200" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="directeur_attr" value="+ dateDebut : DATE" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;whiteSpace=wrap;" vertex="1" parent="directeur">
+          <mxGeometry y="26" width="200" height="34" as="geometry"/>
+        </mxCell>
+
+        <!-- PRESIDENT -->
+        <mxCell id="president" value="Président" style="swimlane;fontStyle=1;align=center;startSize=26;container=1;collapsible=0;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="600" y="360" width="200" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="president_attr" value="+ prime : DECIMAL" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;whiteSpace=wrap;" vertex="1" parent="president">
+          <mxGeometry y="26" width="200" height="34" as="geometry"/>
+        </mxCell>
+
+        <!-- COMPETITEUR -->
+        <mxCell id="competiteur" value="Compétiteur" style="swimlane;fontStyle=1;align=center;startSize=26;container=1;collapsible=0;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="820" y="360" width="240" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="competiteur_attr" value="+ datePremiereParticipation : DATE" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;whiteSpace=wrap;" vertex="1" parent="competiteur">
+          <mxGeometry y="26" width="240" height="34" as="geometry"/>
+        </mxCell>
+
+        <!-- EVALUATEUR -->
+        <mxCell id="evaluateur" value="Évaluateur" style="swimlane;fontStyle=1;align=center;startSize=26;container=1;collapsible=0;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="360" width="220" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="evaluateur_attr" value="+ specialite : VARCHAR(100)&#xa;+ niveau : VARCHAR(50)&#xa;+ experience : INT" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;whiteSpace=wrap;" vertex="1" parent="evaluateur">
+          <mxGeometry y="26" width="220" height="74" as="geometry"/>
+        </mxCell>
+
+        <!-- CONCOURS -->
+        <mxCell id="concours" value="Concours" style="swimlane;fontStyle=1;align=center;startSize=26;container=1;collapsible=0;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="840" y="40" width="260" height="180" as="geometry"/>
+        </mxCell>
+        <mxCell id="concours_attr" value="+ numConcours : INT &lt;&lt;PK&gt;&gt;&#xa;+ theme : VARCHAR(200)&#xa;+ dateDebut : DATE&#xa;+ dateFin : DATE&#xa;+ etat : ENUM&#xa;+ description : TEXT" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;whiteSpace=wrap;" vertex="1" parent="concours">
+          <mxGeometry y="26" width="260" height="154" as="geometry"/>
+        </mxCell>
+
+        <!-- DESSIN -->
+        <mxCell id="dessin" value="Dessin" style="swimlane;fontStyle=1;align=center;startSize=26;container=1;collapsible=0;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="840" y="540" width="240" height="170" as="geometry"/>
+        </mxCell>
+        <mxCell id="dessin_attr" value="+ numDessin : INT &lt;&lt;PK&gt;&gt;&#xa;+ commentaire : TEXT&#xa;+ classement : INT&#xa;+ dateRemise : DATE&#xa;+ leDessin : VARCHAR(255)&#xa;+ titre : VARCHAR(200)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;whiteSpace=wrap;" vertex="1" parent="dessin">
+          <mxGeometry y="26" width="240" height="144" as="geometry"/>
+        </mxCell>
+
+        <!-- EVALUATION (classe d'association) -->
+        <mxCell id="evaluation" value="Évaluation" style="swimlane;fontStyle=1;align=center;startSize=26;container=1;collapsible=0;fontSize=14;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="1160" y="560" width="220" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="evaluation_attr" value="+ dateEvaluation : DATE&#xa;+ note : INT&#xa;+ commentaire : TEXT" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;whiteSpace=wrap;" vertex="1" parent="evaluation">
+          <mxGeometry y="26" width="220" height="84" as="geometry"/>
+        </mxCell>
+
+        <!-- HERITAGE : Utilisateur -> sous-classes -->
+        <mxCell id="h1" style="endArrow=block;endSize=16;endFill=0;strokeWidth=2;" edge="1" source="admin" target="utilisateur" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="h2" style="endArrow=block;endSize=16;endFill=0;strokeWidth=2;" edge="1" source="directeur" target="utilisateur" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="h3" style="endArrow=block;endSize=16;endFill=0;strokeWidth=2;" edge="1" source="president" target="utilisateur" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="h4" style="endArrow=block;endSize=16;endFill=0;strokeWidth=2;" edge="1" source="competiteur" target="utilisateur" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="h5" style="endArrow=block;endSize=16;endFill=0;strokeWidth=2;" edge="1" source="evaluateur" target="utilisateur" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ASSOCIATION : Club 1--* Utilisateur (adhère) -->
+        <mxCell id="a1" value="" style="endArrow=none;strokeWidth=1.5;" edge="1" source="club" target="utilisateur" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="a1_l1" value="1" style="edgeLabel;resizable=0;html=1;align=right;" connectable="0" vertex="1" parent="a1">
+          <mxGeometry x="-0.8" relative="1" as="geometry"><mxPoint x="-10" y="-10" as="offset"/></mxGeometry>
+        </mxCell>
+        <mxCell id="a1_l2" value="*" style="edgeLabel;resizable=0;html=1;align=left;" connectable="0" vertex="1" parent="a1">
+          <mxGeometry x="0.8" relative="1" as="geometry"><mxPoint x="10" y="-10" as="offset"/></mxGeometry>
+        </mxCell>
+        <mxCell id="a1_name" value="adhère" style="edgeLabel;resizable=0;html=1;" connectable="0" vertex="1" parent="a1">
+          <mxGeometry relative="1" as="geometry"><mxPoint y="-15" as="offset"/></mxGeometry>
+        </mxCell>
+
+        <!-- ASSOCIATION : Club *--* Concours (participe) -->
+        <mxCell id="a2" value="" style="endArrow=none;strokeWidth=1.5;" edge="1" source="club" target="concours" parent="1">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="170" y="20"/><mxPoint x="970" y="20"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="a2_l1" value="*" style="edgeLabel;resizable=0;html=1;" connectable="0" vertex="1" parent="a2">
+          <mxGeometry x="-0.8" relative="1" as="geometry"><mxPoint x="-10" y="15" as="offset"/></mxGeometry>
+        </mxCell>
+        <mxCell id="a2_l2" value="*" style="edgeLabel;resizable=0;html=1;" connectable="0" vertex="1" parent="a2">
+          <mxGeometry x="0.8" relative="1" as="geometry"><mxPoint x="10" y="15" as="offset"/></mxGeometry>
+        </mxCell>
+        <mxCell id="a2_name" value="participe" style="edgeLabel;resizable=0;html=1;" connectable="0" vertex="1" parent="a2">
+          <mxGeometry relative="1" as="geometry"><mxPoint y="-10" as="offset"/></mxGeometry>
+        </mxCell>
+
+        <!-- ASSOCIATION : Directeur 1--1 Club (dirige) -->
+        <mxCell id="a3" value="" style="endArrow=none;strokeWidth=1.5;" edge="1" source="directeur" target="club" parent="1">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="380" y="440"/><mxPoint x="40" y="440"/><mxPoint x="40" y="270"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="a3_l1" value="1" style="edgeLabel;resizable=0;html=1;" connectable="0" vertex="1" parent="a3">
+          <mxGeometry x="-0.8" relative="1" as="geometry"><mxPoint x="-10" y="0" as="offset"/></mxGeometry>
+        </mxCell>
+        <mxCell id="a3_l2" value="1" style="edgeLabel;resizable=0;html=1;" connectable="0" vertex="1" parent="a3">
+          <mxGeometry x="0.8" relative="1" as="geometry"><mxPoint x="10" y="0" as="offset"/></mxGeometry>
+        </mxCell>
+        <mxCell id="a3_name" value="dirige" style="edgeLabel;resizable=0;html=1;" connectable="0" vertex="1" parent="a3">
+          <mxGeometry relative="1" as="geometry"><mxPoint y="-10" as="offset"/></mxGeometry>
+        </mxCell>
+
+        <!-- ASSOCIATION : Président 1--* Concours (préside) -->
+        <mxCell id="a4" value="" style="endArrow=none;strokeWidth=1.5;" edge="1" source="president" target="concours" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="a4_l1" value="1" style="edgeLabel;resizable=0;html=1;" connectable="0" vertex="1" parent="a4">
+          <mxGeometry x="-0.8" relative="1" as="geometry"><mxPoint x="-10" y="-10" as="offset"/></mxGeometry>
+        </mxCell>
+        <mxCell id="a4_l2" value="*" style="edgeLabel;resizable=0;html=1;" connectable="0" vertex="1" parent="a4">
+          <mxGeometry x="0.8" relative="1" as="geometry"><mxPoint x="10" y="-10" as="offset"/></mxGeometry>
+        </mxCell>
+        <mxCell id="a4_name" value="préside" style="edgeLabel;resizable=0;html=1;" connectable="0" vertex="1" parent="a4">
+          <mxGeometry relative="1" as="geometry"><mxPoint y="-15" as="offset"/></mxGeometry>
+        </mxCell>
+
+        <!-- ASSOCIATION : Compétiteur *--* Concours (s'inscrit) -->
+        <mxCell id="a5" value="" style="endArrow=none;strokeWidth=1.5;" edge="1" source="competiteur" target="concours" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="a5_l1" value="*" style="edgeLabel;resizable=0;html=1;" connectable="0" vertex="1" parent="a5">
+          <mxGeometry x="-0.8" relative="1" as="geometry"><mxPoint x="-10" y="-10" as="offset"/></mxGeometry>
+        </mxCell>
+        <mxCell id="a5_l2" value="*" style="edgeLabel;resizable=0;html=1;" connectable="0" vertex="1" parent="a5">
+          <mxGeometry x="0.8" relative="1" as="geometry"><mxPoint x="10" y="-10" as="offset"/></mxGeometry>
+        </mxCell>
+        <mxCell id="a5_name" value="s'inscrit" style="edgeLabel;resizable=0;html=1;" connectable="0" vertex="1" parent="a5">
+          <mxGeometry relative="1" as="geometry"><mxPoint y="-15" as="offset"/></mxGeometry>
+        </mxCell>
+
+        <!-- ASSOCIATION : Compétiteur 1--* Dessin (soumet) -->
+        <mxCell id="a6" value="" style="endArrow=none;strokeWidth=1.5;" edge="1" source="competiteur" target="dessin" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="a6_l1" value="1" style="edgeLabel;resizable=0;html=1;" connectable="0" vertex="1" parent="a6">
+          <mxGeometry x="-0.8" relative="1" as="geometry"><mxPoint x="-10" y="-10" as="offset"/></mxGeometry>
+        </mxCell>
+        <mxCell id="a6_l2" value="*" style="edgeLabel;resizable=0;html=1;" connectable="0" vertex="1" parent="a6">
+          <mxGeometry x="0.8" relative="1" as="geometry"><mxPoint x="10" y="-10" as="offset"/></mxGeometry>
+        </mxCell>
+        <mxCell id="a6_name" value="soumet" style="edgeLabel;resizable=0;html=1;" connectable="0" vertex="1" parent="a6">
+          <mxGeometry relative="1" as="geometry"><mxPoint y="-15" as="offset"/></mxGeometry>
+        </mxCell>
+
+        <!-- ASSOCIATION : Concours 1--* Dessin (contient) -->
+        <mxCell id="a7" value="" style="endArrow=none;strokeWidth=1.5;" edge="1" source="concours" target="dessin" parent="1">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="1120" y="130"/><mxPoint x="1120" y="500"/><mxPoint x="960" y="500"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="a7_l1" value="1" style="edgeLabel;resizable=0;html=1;" connectable="0" vertex="1" parent="a7">
+          <mxGeometry x="-0.8" relative="1" as="geometry"><mxPoint x="-10" y="0" as="offset"/></mxGeometry>
+        </mxCell>
+        <mxCell id="a7_l2" value="*" style="edgeLabel;resizable=0;html=1;" connectable="0" vertex="1" parent="a7">
+          <mxGeometry x="0.8" relative="1" as="geometry"><mxPoint x="10" y="0" as="offset"/></mxGeometry>
+        </mxCell>
+        <mxCell id="a7_name" value="contient" style="edgeLabel;resizable=0;html=1;" connectable="0" vertex="1" parent="a7">
+          <mxGeometry relative="1" as="geometry"><mxPoint y="-10" as="offset"/></mxGeometry>
+        </mxCell>
+
+        <!-- ASSOCIATION : Évaluateur -- Dessin via Évaluation -->
+        <mxCell id="a8" value="" style="endArrow=none;strokeWidth=1.5;" edge="1" source="evaluateur" target="evaluation" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="a8_l1" value="*" style="edgeLabel;resizable=0;html=1;" connectable="0" vertex="1" parent="a8">
+          <mxGeometry x="-0.8" relative="1" as="geometry"><mxPoint x="-10" y="-10" as="offset"/></mxGeometry>
+        </mxCell>
+        <mxCell id="a8_name" value="évalue" style="edgeLabel;resizable=0;html=1;" connectable="0" vertex="1" parent="a8">
+          <mxGeometry relative="1" as="geometry"><mxPoint y="-15" as="offset"/></mxGeometry>
+        </mxCell>
+
+        <mxCell id="a9" value="" style="endArrow=none;strokeWidth=1.5;" edge="1" source="evaluation" target="dessin" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="a9_l1" value="*" style="edgeLabel;resizable=0;html=1;" connectable="0" vertex="1" parent="a9">
+          <mxGeometry x="0.8" relative="1" as="geometry"><mxPoint x="10" y="-10" as="offset"/></mxGeometry>
+        </mxCell>
+
+        <!-- ASSOCIATION : Évaluateur *--* Concours (s'inscrit) -->
+        <mxCell id="a10" value="" style="endArrow=none;strokeWidth=1.5;" edge="1" source="evaluateur" target="concours" parent="1">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="1300" y="360"/><mxPoint x="1300" y="130"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="a10_l1" value="*" style="edgeLabel;resizable=0;html=1;" connectable="0" vertex="1" parent="a10">
+          <mxGeometry x="-0.8" relative="1" as="geometry"><mxPoint x="-10" y="0" as="offset"/></mxGeometry>
+        </mxCell>
+        <mxCell id="a10_l2" value="*" style="edgeLabel;resizable=0;html=1;" connectable="0" vertex="1" parent="a10">
+          <mxGeometry x="0.8" relative="1" as="geometry"><mxPoint x="-10" y="0" as="offset"/></mxGeometry>
+        </mxCell>
+        <mxCell id="a10_name" value="s'inscrit (éval)" style="edgeLabel;resizable=0;html=1;" connectable="0" vertex="1" parent="a10">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="15" y="0" as="offset"/></mxGeometry>
+        </mxCell>
+
+        <!-- NOTE: ENUM -->
+        <mxCell id="note1" value="etat : ENUM(&#xa;'pas_commence',&#xa;'en_cours',&#xa;'attente',&#xa;'resultat',&#xa;'evalue')" style="shape=note;size=15;align=left;spacingLeft=10;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1140" y="40" width="170" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="note1_link" style="endArrow=none;dashed=1;strokeColor=#999999;" edge="1" source="note1" target="concours" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- NOTE: Classe d'association -->
+        <mxCell id="note2" value="Classe d'association&#xa;entre Évaluateur et Dessin.&#xa;Chaque dessin est évalué&#xa;par exactement 2 évaluateurs." style="shape=note;size=15;align=left;spacingLeft=10;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1400" y="560" width="230" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="note2_link" style="endArrow=none;dashed=1;strokeColor=#999999;" edge="1" source="note2" target="evaluation" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

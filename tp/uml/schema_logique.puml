@@ -1,0 +1,137 @@
+@startuml schema_logique
+
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+hide circle
+
+entity "CLUB" as club {
+  * **numClub** : INT <<PK>>
+  --
+  nomClub : VARCHAR(100)
+  adresse : VARCHAR(255)
+  numTelephone : VARCHAR(20)
+  nombreAdherents : INT
+  ville : VARCHAR(100)
+  departement : VARCHAR(100)
+  region : VARCHAR(100)
+  dateCreation : DATE
+}
+
+entity "UTILISATEUR" as utilisateur {
+  * **numUtilisateur** : INT <<PK>>
+  --
+  nom : VARCHAR(100)
+  prenom : VARCHAR(100)
+  adresse : VARCHAR(255)
+  login : VARCHAR(50)
+  motDePasse : VARCHAR(255)
+  email : VARCHAR(150)
+  dateNaissance : DATE
+  *numClub : INT <<FK>>
+}
+
+entity "ADMINISTRATEUR" as admin {
+  * **numUtilisateur** : INT <<PK>> <<FK>>
+  --
+  dateDebut : DATE
+}
+
+entity "DIRECTEUR" as directeur {
+  * **numUtilisateur** : INT <<PK>> <<FK>>
+  --
+  dateDebut : DATE
+  *numClub : INT <<FK>>
+}
+
+entity "PRESIDENT" as president {
+  * **numUtilisateur** : INT <<PK>> <<FK>>
+  --
+  prime : DECIMAL(10,2)
+  dateElection : DATE
+}
+
+entity "COMPETITEUR" as competiteur {
+  * **numUtilisateur** : INT <<PK>> <<FK>>
+  --
+  datePremiereParticipation : DATE
+  categorie : VARCHAR(50)
+}
+
+entity "EVALUATEUR" as evaluateur {
+  * **numUtilisateur** : INT <<PK>> <<FK>>
+  --
+  specialite : VARCHAR(100)
+  niveau : VARCHAR(50)
+  experience : INT
+}
+
+entity "CONCOURS" as concours {
+  * **numConcours** : INT <<PK>>
+  --
+  theme : VARCHAR(200)
+  dateDebut : DATE
+  dateFin : DATE
+  etat : ENUM
+  description : TEXT
+  nbMaxDessinsParCompetiteur : INT
+  nbMinClubs : INT
+  *numPresident : INT <<FK>>
+}
+
+entity "PARTICIPATION_CLUB_CONCOURS" as pcc {
+  * **numClub** : INT <<PK>> <<FK>>
+  * **numConcours** : INT <<PK>> <<FK>>
+}
+
+entity "INSCRIPTION_COMPETITEUR_CONCOURS" as icc {
+  * **numCompetiteur** : INT <<PK>> <<FK>>
+  * **numConcours** : INT <<PK>> <<FK>>
+}
+
+entity "INSCRIPTION_EVALUATEUR_CONCOURS" as iec {
+  * **numEvaluateur** : INT <<PK>> <<FK>>
+  * **numConcours** : INT <<PK>> <<FK>>
+}
+
+entity "DESSIN" as dessin {
+  * **numDessin** : INT <<PK>>
+  --
+  commentaire : TEXT
+  classement : INT
+  dateRemise : DATE
+  leDessin : VARCHAR(255)
+  titre : VARCHAR(200)
+  *numCompetiteur : INT <<FK>>
+  *numConcours : INT <<FK>>
+}
+
+entity "EVALUATION" as evaluation {
+  * **numEvaluateur** : INT <<PK>> <<FK>>
+  * **numDessin** : INT <<PK>> <<FK>>
+  --
+  dateEvaluation : DATE
+  note : INT
+  commentaire : TEXT
+  appreciation : VARCHAR(50)
+}
+
+club ||--o{ utilisateur
+utilisateur ||--o| admin
+utilisateur ||--o| directeur
+utilisateur ||--o| president
+utilisateur ||--o| competiteur
+utilisateur ||--o| evaluateur
+directeur }o--|| club : dirige
+president ||--o{ concours : préside
+club ||--o{ pcc
+concours ||--o{ pcc
+competiteur ||--o{ icc
+concours ||--o{ icc
+evaluateur ||--o{ iec
+concours ||--o{ iec
+competiteur ||--o{ dessin : soumet
+concours ||--o{ dessin : porte sur
+evaluateur ||--o{ evaluation
+dessin ||--o{ evaluation
+
+@enduml

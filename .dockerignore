@@ -1,0 +1,33 @@
+# Dependencies & build
+node_modules
+dist
+.git
+
+# Database
+*.db
+
+# Archives & docs
+*.zip
+*.docx
+*.pdf
+*.log
+Document_Reponses_Projet.html
+
+# Conversations (not needed in image)
+Migrating to SQL.js.md
+prompt_site_web.txt
+tp_content.txt
+image/
+
+# Old directories
+art-contest-hub-main/
+tp/web/
+
+# Uploads content (mounted as volume)
+server/uploads/dessins/*
+
+# Test & dev files
+playwright-fixture.ts
+playwright.config.ts
+vitest.config.ts
+*.test.*

@@ -1,0 +1,152 @@
+@startuml diagramme_classes
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+class Club {
+  + numClub : INT <<PK>>
+  + nomClub : VARCHAR(100)
+  + adresse : VARCHAR(255)
+  + numTelephone : VARCHAR(20)
+  + nombreAdherents : INT
+  + ville : VARCHAR(100)
+  + departement : VARCHAR(100)
+  + region : VARCHAR(100)
+  + dateCreation : DATE
+}
+
+class Utilisateur {
+  + numUtilisateur : INT <<PK>>
+  + nom : VARCHAR(100)
+  + prenom : VARCHAR(100)
+  + adresse : VARCHAR(255)
+  + login : VARCHAR(50)
+  + motDePasse : VARCHAR(255)
+  + email : VARCHAR(150)
+  + dateNaissance : DATE
+}
+
+class Administrateur {
+  + dateDebut : DATE
+}
+
+class Directeur {
+  + dateDebut : DATE
+}
+
+class President {
+  + prime : DECIMAL
+  + dateElection : DATE
+}
+
+class Competiteur {
+  + datePremiereParticipation : DATE
+  + categorie : VARCHAR(50)
+}
+
+class Evaluateur {
+  + specialite : VARCHAR(100)
+  + niveau : VARCHAR(50)
+  + experience : INT
+}
+
+class Concours {
+  + numConcours : INT <<PK>>
+  + theme : VARCHAR(200)
+  + dateDebut : DATE
+  + dateFin : DATE
+  + etat : ENUM
+  + description : TEXT
+  + nbMaxDessinsParCompetiteur : INT
+  + nbMinClubs : INT
+}
+
+class Dessin {
+  + numDessin : INT <<PK>>
+  + commentaire : TEXT
+  + classement : INT
+  + dateRemise : DATE
+  + leDessin : VARCHAR(255)
+  + titre : VARCHAR(200)
+}
+
+class Evaluation {
+  + dateEvaluation : DATE
+  + note : INT
+  + commentaire : TEXT
+  + appreciation : VARCHAR(50)
+}
+
+' === HERITAGE ===
+Utilisateur <|-- Administrateur
+Utilisateur <|-- Directeur
+Utilisateur <|-- President
+Utilisateur <|-- Competiteur
+Utilisateur <|-- Evaluateur
+
+' === ASSOCIATIONS ===
+
+Club "1" -- "*" Utilisateur : adhère >
+Club "*" -- "*" Concours : participe >
+Directeur "1" -- "1" Club : dirige >
+President "1" -- "*" Concours : préside >
+Competiteur "*" -- "*" Concours : s'inscrit >
+Competiteur "1" -- "*" Dessin : soumet >
+Concours "1" -- "*" Dessin : porte sur >
+(Evaluateur, Dessin) .. Evaluation : évalue >
+
+note right of Evaluation
+  Classe d'association
+  entre Evaluateur et Dessin.
+  Chaque dessin est évalué
+  par exactement 2 évaluateurs.
+end note
+
+note bottom of Concours
+  etat : ENUM('pas_commence',
+  'en_cours', 'attente',
+  'resultat', 'evalue')
+  Attributs ajoutés :
+  - nbMaxDessinsParCompetiteur
+  - nbMinClubs (contraintes métier)
+end note
+
+note right of Utilisateur
+  Attributs ajoutés :
+  - email (contact, interface)
+  - dateNaissance (calcul âge
+    pour requêtes imposées)
+end note
+
+note bottom of Club
+  Attribut ajouté :
+  - dateCreation (statistiques)
+end note
+
+note right of Evaluateur
+  Attributs ajoutés :
+  - niveau (filtre jury)
+  - experience (années, stats)
+end note
+
+note left of Dessin
+  Attribut ajouté :
+  - titre (affichage interface)
+end note
+
+note bottom of Competiteur
+  Attribut ajouté :
+  - categorie (junior, senior, pro)
+end note
+
+note left of President
+  Attribut ajouté :
+  - dateElection (historique)
+end note
+
+note bottom of Evaluation
+  Attribut ajouté :
+  - appreciation (résumé qualitatif)
+end note
+
+@enduml

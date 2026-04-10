@@ -1,0 +1,52 @@
+# Dependencies
+node_modules/
+server/node_modules/
+
+# Build output
+dist/
+dist-ssr/
+
+# Database
+*.db
+
+# Environment
+.env
+.env.*
+*.local
+
+# Uploads (keep .gitkeep)
+server/uploads/dessins/*
+!server/uploads/dessins/.gitkeep
+
+# IDE
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.sw?
+
+# Logs
+*.log
+npm-debug.log*
+
+# Archives
+*.zip
+
+# Conversations & prompts (local only)
+Migrating to SQL.js.md
+prompt_site_web.txt
+tp_content.txt
+image/
+
+# Livrables Word/PDF (local only)
+*.docx
+*.pdf
+Document_Reponses_Projet.html
+
+# Misc
+.lovable/
+bun.lockb
+bun.lock
+art-contest-hub-main/
+tp/web/

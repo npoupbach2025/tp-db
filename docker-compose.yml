@@ -1,0 +1,26 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: concours-dessins
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    volumes:
+      - db-data:/data
+      - uploads:/app/server/uploads/dessins
+    environment:
+      - NODE_ENV=production
+      - TP_PROJECT_ROOT=/tp
+      - DB_PATH=/data/concours_dessins.db
+    networks:
+      - web
+
+volumes:
+  db-data:
+  uploads:
+
+networks:
+  web:
+    driver: bridge

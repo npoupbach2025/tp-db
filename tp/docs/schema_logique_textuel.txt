@@ -1,0 +1,117 @@
+================================================================================
+                    FORMALISME TEXTUEL DU SCHÉMA LOGIQUE
+              Projet : Concours de Dessins Inter-Clubs
+================================================================================
+
+Légende :
+  - Les clés primaires sont soulignées (marquées #PK)
+  - Les clés étrangères sont marquées #FK
+  - Les attributs NOT NULL sont marqués (NN)
+
+================================================================================
+
+CLUB (#numClub, nomClub (NN), adresse (NN), numTelephone, nombreAdherents,
+      ville, departement, region, dateCreation)
+
+UTILISATEUR (#numUtilisateur, nom (NN), prenom (NN), adresse, login (NN)(UNIQUE),
+             motDePasse (NN), email, dateNaissance, numClub #FK(CLUB))
+
+ADMINISTRATEUR (#numUtilisateur #FK(UTILISATEUR), dateDebut)
+
+DIRECTEUR (#numUtilisateur #FK(UTILISATEUR), dateDebut, numClub #FK(CLUB))
+
+PRESIDENT (#numUtilisateur #FK(UTILISATEUR), prime, dateElection)
+
+COMPETITEUR (#numUtilisateur #FK(UTILISATEUR), datePremiereParticipation, categorie)
+
+EVALUATEUR (#numUtilisateur #FK(UTILISATEUR), specialite, niveau, experience)
+
+CONCOURS (#numConcours, theme (NN), dateDebut (NN), dateFin (NN),
+          etat {'pas_commence','en_cours','attente','resultat','evalue'},
+          description, nbMaxDessinsParCompetiteur, nbMinClubs,
+          numPresident #FK(PRESIDENT))
+
+PARTICIPATION_CLUB_CONCOURS (#numClub #FK(CLUB), #numConcours #FK(CONCOURS))
+
+INSCRIPTION_COMPETITEUR_CONCOURS (#numCompetiteur #FK(COMPETITEUR),
+                                  #numConcours #FK(CONCOURS))
+
+INSCRIPTION_EVALUATEUR_CONCOURS (#numEvaluateur #FK(EVALUATEUR),
+                                 #numConcours #FK(CONCOURS))
+
+DESSIN (#numDessin, commentaire, classement, dateRemise, leDessin, titre,
+        numCompetiteur #FK(COMPETITEUR) (NN), numConcours #FK(CONCOURS) (NN))
+
+EVALUATION (#numEvaluateur #FK(EVALUATEUR), #numDessin #FK(DESSIN),
+            dateEvaluation, note CHECK(0..20), commentaire, appreciation)
+
+================================================================================
+                        CONTRAINTES D'INTÉGRITÉ
+================================================================================
+
+1. Héritage exclusif : Un UTILISATEUR peut être au plus un seul sous-type
+   (ADMINISTRATEUR, DIRECTEUR, PRESIDENT, COMPETITEUR ou EVALUATEUR).
+
+2. CONCOURS.etat ∈ {'pas_commence', 'en_cours', 'attente', 'resultat', 'evalue'}
+
+3. EVALUATION.note ∈ [0, 20]
+
+4. Chaque DESSIN est évalué par exactement 2 évaluateurs distincts.
+
+5. Un DIRECTEUR dirige exactement un CLUB.
+
+6. Un PRESIDENT préside un ou plusieurs CONCOURS.
+
+7. Un COMPETITEUR peut soumettre au maximum 3 dessins par concours.
+
+8. UTILISATEUR.login est unique.
+
+================================================================================
+                     DÉPENDANCES FONCTIONNELLES
+================================================================================
+
+CLUB :
+  numClub → nomClub, adresse, numTelephone, nombreAdherents, ville,
+            departement, region, dateCreation
+
+UTILISATEUR :
+  numUtilisateur → nom, prenom, adresse, login, motDePasse, email,
+                   dateNaissance, numClub
+  login → numUtilisateur  (clé candidate)
+
+ADMINISTRATEUR :
+  numUtilisateur → dateDebut
+
+DIRECTEUR :
+  numUtilisateur → dateDebut, numClub
+
+PRESIDENT :
+  numUtilisateur → prime, dateElection
+
+COMPETITEUR :
+  numUtilisateur → datePremiereParticipation, categorie
+
+EVALUATEUR :
+  numUtilisateur → specialite, niveau, experience
+
+CONCOURS :
+  numConcours → theme, dateDebut, dateFin, etat, description,
+                nbMaxDessinsParCompetiteur, nbMinClubs, numPresident
+
+DESSIN :
+  numDessin → commentaire, classement, dateRemise, leDessin, titre,
+              numCompetiteur, numConcours
+
+EVALUATION :
+  (numEvaluateur, numDessin) → dateEvaluation, note, commentaire, appreciation
+
+PARTICIPATION_CLUB_CONCOURS :
+  (numClub, numConcours) → ∅  (relation d'association pure)
+
+INSCRIPTION_COMPETITEUR_CONCOURS :
+  (numCompetiteur, numConcours) → ∅  (relation d'association pure)
+
+INSCRIPTION_EVALUATEUR_CONCOURS :
+  (numEvaluateur, numConcours) → ∅  (relation d'association pure)
+
+================================================================================
