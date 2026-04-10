@@ -23,6 +23,7 @@ router.get('/', (req, res) => {
       etape2: safeRead('docs/etape2_contraintes.md'),
       etape3: safeRead('docs/etape3_schema_logique.md'),
       schemaTextuel: safeRead('docs/schema_logique_textuel.txt'),
+      documentReponses: safeRead('Document_Reponses_Projet.html'),
     },
     sql: {
       creation: safeRead('sql/creationConcoursDessins.sql'),

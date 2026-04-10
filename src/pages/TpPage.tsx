@@ -13,6 +13,7 @@ interface TpPayload {
     etape2: string;
     etape3: string;
     schemaTextuel: string;
+    documentReponses: string;
   };
   sql: Record<string, string>;
   uml: {
@@ -52,6 +53,16 @@ function CodeBlock({ content }: { content: string }) {
       {content || "(vide)"}
     </pre>
   );
+}
+
+function extractBody(html: string): string {
+  if (!html) return "";
+  const bodyMatch = html.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+  const content = bodyMatch ? bodyMatch[1] : html;
+  // Extract styles from <head> and prepend them scoped
+  const styleMatch = html.match(/<style[^>]*>([\s\S]*?)<\/style>/i);
+  const styles = styleMatch ? `<style>.tp-html-doc {${styleMatch[1]}}\n.tp-html-doc h1,.tp-html-doc h2,.tp-html-doc h3,.tp-html-doc h4{color:hsl(var(--foreground))}.tp-html-doc table{width:100%}.tp-html-doc th,.tp-html-doc td{border:1px solid hsl(var(--border));padding:6px 8px}.tp-html-doc th{background:hsl(var(--muted))}.tp-html-doc pre,.tp-html-doc code{background:hsl(var(--muted));border-color:hsl(var(--border))}.tp-html-doc .constraint-box{background:hsl(var(--muted)/0.5);border-left-color:hsl(var(--primary))}.tp-html-doc .note{background:hsl(var(--muted)/0.3);border-left-color:hsl(var(--primary))}</style>` : "";
+  return styles + content;
 }
 
 export default function TpPage() {
@@ -224,24 +235,15 @@ export default function TpPage() {
           </TabsContent>
 
           <TabsContent value="docs">
-            <div className="grid gap-4">
-              <Card>
-                <CardHeader className="pb-2"><CardTitle className="text-base">Étape 0 — Compréhension</CardTitle></CardHeader>
-                <CardContent><CodeBlock content={tp.docs.etape0} /></CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="pb-2"><CardTitle className="text-base">Étape 2 — Contraintes</CardTitle></CardHeader>
-                <CardContent><CodeBlock content={tp.docs.etape2} /></CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="pb-2"><CardTitle className="text-base">Étape 3 — Schéma logique</CardTitle></CardHeader>
-                <CardContent><CodeBlock content={tp.docs.etape3} /></CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="pb-2"><CardTitle className="text-base">Schéma logique textuel</CardTitle></CardHeader>
-                <CardContent><CodeBlock content={tp.docs.schemaTextuel} /></CardContent>
-              </Card>
-            </div>
+            <Card>
+              <CardContent className="p-6">
+                <div
+                  className="tp-html-doc prose prose-sm max-w-none dark:prose-invert"
+                  style={{ fontSize: '11pt', lineHeight: 1.5 }}
+                  dangerouslySetInnerHTML={{ __html: extractBody(tp.docs.documentReponses) }}
+                />
+              </CardContent>
+            </Card>
           </TabsContent>
 
           <TabsContent value="sql">
